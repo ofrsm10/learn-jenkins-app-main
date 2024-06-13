@@ -2,8 +2,6 @@ pipeline {
     agent any
 
     stages {
-        /*
-
         stage('Build') {
             agent {
                 docker {
@@ -22,7 +20,6 @@ pipeline {
                 '''
             }
         }
-        */
 
         stage('Test') {
             agent {
@@ -31,10 +28,8 @@ pipeline {
                     reuseNode true
                 }
             }
-
             steps {
                 sh '''
-                    #test -f build/index.html
                     npm test
                 '''
             }
@@ -47,7 +42,6 @@ pipeline {
                     reuseNode true
                 }
             }
-
             steps {
                 sh '''
                     npm install serve
@@ -61,7 +55,8 @@ pipeline {
 
     post {
         always {
-            junit 'jest-results/junit.xml'
+            junit 'test-results/junit.xml'
+            archiveArtifacts artifacts: 'test-results/junit.xml', allowEmptyArchive: true
         }
     }
 }
